@@ -40,21 +40,57 @@ app.get("/getnamebyget/:name",async(req, res)=>{
     }
 } )
 
-const studentData= {
-    kaif:{collage:"mit", year:"pasout", sem:"8", strem:"cse"},
-    mofi:{collage:"mip", year:"pasout", sem:"6", strem:"me"},
-    aysha:{collage:"mit", year:"pasout", sem:"8", strem:"cse"},
-}
+const  students=[
+    { id: 1, name: "Kaif", phone:862962002,email:"kaif123@gmail.com",qualification: "B.Tech",Clg:"MIT" , PassoutYear:2024,address: "Delhi" },
+    { id: 2, name: "Mofi", phone:8915424719,email:"mofi178@gmail.com",qualification: "Diploma",Clg:"MIP" , PassoutYear:2024,address: "West Bengal" },
+    { id: 3, name: "Ayesha", phone:9083444911,email:"ayehsa123@gmail.com",qualification: "B.Tech",Clg:"MIT" , PassoutYear:2025,address: "West Mediniput" },
+
+];
 
 app.get("/:name", async(req,res)=>{
     try {
         const {name}=req.params;
         console.log(name)
 
-        res.json({data: studentData[name]});
+        res.json({data: students[name]});
     } catch (error) {
         console.log(error);
     }
+})
+
+app.post('/user/:id/updateemail', (req, res)=>{
+    try {
+        const {email}= req.body;
+        console.log(req.body)
+        const {id}= req.params;
+
+        // req.body= { name: "kaif ", email:"kaif@gmail.com", mobile:"e0eru2038"}
+
+        if(email.trim() === ""){
+            throw new Error("Email is empty!!");
+        }
+
+        const userIndex= students.findIndex((student)=> student.id.toString()===id.toString());
+
+        if(userIndex<0){
+            throw new Error("No user found with given id!!")
+        }
+console.log(students[userIndex].email)
+        students[userIndex].email=email;
+
+        return res.status(200).json({updated:students[userIndex], message:" user email updated"})
+
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+app.get("/user/:id", (req,res)=>{
+    const {id}= req.params;
+    console.log(id)
+    const user= students.find((student)=>student.id.toString()===id.toString());
+    console.log(user)
+    return res.status(200).json(user)
 })
 app.listen(PORT, () => {
   console.log("App is running on the port", PORT);
